@@ -310,7 +310,8 @@ class VisionTransformer(nn.Module):
         x = torch.cat((cls_tokens, x), dim=1)
         x = self.add([x, self.pos_embed])
 
-        x.register_hook(self.save_inp_grad)
+        if torch.is_grad_enabled() and x.requires_grad:
+            x.register_hook(self.save_inp_grad)
 
         for blk in self.blocks:
             x = blk(x)
